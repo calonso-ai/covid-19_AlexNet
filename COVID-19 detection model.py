@@ -24,3 +24,21 @@ from keras.preprocessing.image import img_to_array
 from keras.models import Model
 from numpy import expand_dims
 %matplotlib inline
+
+#Train, test and validation sets loading.
+#First, the train set will be loaded in the x_train variables, which will contain the images in format
+# np.array, and y_train, which will contain the categories to which the images belong.
+
+# Therefore, we open the text file that contains the path of the images and their labels:
+
+with open('training.txt') as train_fich:
+    train_reader = csv.reader(train_fich, delimiter="\t")
+    train_fich_list = list(train_reader)
+    
+#We save the content of the file in a list of lists, in train_fich_list [n] [0] the labels will be saved
+#of the images and in train_fich_list [n] [1] the path of the images will be saved, where n is the number of elements
+#contents in 'training.txt'
+
+#We save the content of the file in a list of lists, in train_fich_list [n] [0] the labels will be saved
+#of the images and in train_fich_list [n] [1] the path of the images will be saved, where n is the number of elements
+#contents in 'training.txt'
