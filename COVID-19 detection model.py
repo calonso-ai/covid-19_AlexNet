@@ -42,3 +42,26 @@ with open('training.txt') as train_fich:
 #We save the content of the file in a list of lists, in train_fich_list [n] [0] the labels will be saved
 #of the images and in train_fich_list [n] [1] the path of the images will be saved, where n is the number of elements
 #contents in 'training.txt'
+
+#With the following line, we separate the labels from the images and save them in a list.
+y_train=[i[0] for i in train_fich_list]
+#And we get the paths of the images that make up the train set.
+x_train_path=[i[1]for i in train_fich_list]
+
+#Now we convert the stored paths into images, for this we resort to the "open" function of 
+# PIL module, which adds image processing capabilities to the Python interpreter. It creates a loop that goes
+#through the list where the paths are stored, the paths are converted into images, the size is adjusted to the
+#dimensions that we need and these images are in turn in np.array elements that will finally be stored in one
+#list.
+
+#The size of the images is fixed at 224x224 since AlexNet (will be analyzed in the next section)
+#use images from this dimesion as input to CNN.
+i=0
+x_train_list=[]
+l=len(x_train_path)
+for i in range(l):
+    img1 =img.open(x_train_path[i])
+    img1=img1.resize((224,224))
+    img1=img1.convert(mode='RGB')
+    x_train_list.append(np.array(img1))
+    i+=1
