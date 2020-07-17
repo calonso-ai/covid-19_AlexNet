@@ -161,7 +161,6 @@ plt.imshow (x_val [0], cmap = 'gray')
 # In the FC stage, a Flattan layer is defined that transforms a two-dimensional matrix (in this case, our
 #imagenes) in a vector that can be processed by the output Dense layer, in this case with 3 nodes, since the
 # classification will be made between 3 categories.
-
 def create_cnn ():
     model=Sequential()
     model.add(Conv2D(2, (2, 2), activation='relu', input_shape=(224,224, 3)))
@@ -170,3 +169,213 @@ def create_cnn ():
     model.add(Dense(3, activation='softmax'))
     return model
 
+# A simple CNN is created, according to the model defined above, using Adam as an optimizer.
+model1=create_cnn()
+model1.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Next, the model is trained using the validation set as the validation set.
+hist_model1=model1.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20)
+
+#We are going to apply real time Data Augmentation, performing rotation, displacement and flip of images of the set
+#de train.
+train_aug = ImageDataGenerator (
+     rotation_range = 20,
+     width_shift_range = 0.2,
+     height_shift_range = 0.2,
+     horizontal_flip = True
+)
+
+#Simple CNN with online DATA AUGMENTATION
+
+#To do this, a new model is created, symmetrical to the one used previously, since the objective is to analyze Data Augmentation influence
+model2 = create_cnn ()
+model2.compile (loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+#Next, we train the model using as validation set our validaton set and online application
+#Data Augmentation to the train set.
+hist_model2 = model2.fit (train_aug.flow (x_train, y_train), validation_data = (x_val, y_val), epochs = 20)
+
+def create_AlexNet ():
+    model = Sequential ()
+
+    # First Convolutionary Layer
+    
+    #With 96 11x11 kernels, stride 4, enabling padding and with one input
+    #de 224x224x3.
+    model.add (Conv2D (filters = 96, input_shape = (224,224.3), kernel_size = (11.11), strides = (4.4), padding = 'valid'))
+    model.add (Activation ('relu'))
+    # Pooling layer, with a 2x2 kernel, 2 stride and padding enabled.
+    model.add (MaxPooling2D (pool_size = (2,2), strides = (2,2), padding = 'valid'))
+    # Batch Normalisation before moving on to the fifth layer.
+    model.add (BatchNormalization ())
+
+    # Second Convolutionary Layer
+    
+    #With 256 11x11 kernels, 4 stride, enabling padding.
+    model.add (Conv2D (filters = 256, kernel_size = (11,11), strides = (1,1), padding = 'valid'))
+    model.add (Activation ('relu'))
+    # Pooling layer, with a 2x2 kernel, 2 stride and padding enabled.
+    model.add (MaxPooling2D (pool_size = (2,2), strides = (2,2), padding = 'valid'))
+    # Batch Normalisation before moving on to the fifth layer.
+    model.add (BatchNormalization ())
+
+    # Third Convolutionary Layer
+    
+    #With 384 3x3 kernels, stride of 1, enabling padding.
+    model.add (Conv2D (filters = 384, kernel_size = (3,3), strides = (1,1), padding = 'valid'))
+    model.add (Activation ('relu'))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # Fourth Convolutionary Layer
+    
+    #With 384 3x3 kernels, stride of 1, enabling padding.
+    model.add (Conv2D (filters = 384, kernel_size = (3,3), strides = (1,1), padding = 'valid'))
+    model.add (Activation ('relu'))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # Fifth Convolutionary Layer
+    
+    #With 256 3x3 kernels, stride of 1, enabling padding.
+    model.add (Conv2D (filters = 256, kernel_size = (3,3), strides = (1,1), padding = 'valid'))
+    model.add (Activation ('relu'))
+    # Pooling layer, with a 2x2 kernel, 2 stride and padding enabled.
+    model.add (MaxPooling2D (pool_size = (2,2), strides = (2,2), padding = 'valid'))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # We go to the Fully Connected (FC) stage
+    model.add (Flatten ())
+    # First layer Dense
+    model.add (Dense (4096))
+    model.add (Activation ('relu'))
+    # Dropout is introduced with probability equal to 0.4 to avoid overfitting.
+    model.add (Dropout (0.4))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # Second layer Dense
+    model.add (Dense (4096))
+    model.add (Activation ('relu'))
+    # # Dropout is introduced
+    model.add (Dropout (0.4))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # Third layer Dense
+    model.add (Dense (1000))
+    model.add (Activation ('relu'))
+    # Dropout is introduced
+    model.add (Dropout (0.4))
+    # Batch Standardization
+    model.add (BatchNormalization ())
+
+    # Output layer with 3 nodes, since the classification will be made between 3 categories
+    model.add (Dense (17))
+    model.add (Dense (3, activation = 'softmax'))
+    
+    return model
+
+#AlexNet model is created as defined above
+model3 = create_AlexNet ()
+model3.compile (loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+hist_model3=model3.fit(x_train, y_train, validation_data=(x_val, y_val), epochs=20)
+
+#RESULT AND CONCLUSIONS
+
+#We represent the evolution of the Accuracy for the train and validation set of the three models:
+    # -CNN simple
+    # -CNN simple with Data Augmentation
+    # -AlexNet
+plt.title ('Accuracy')
+plt.plot (hist_model1.history ['accuracy'], color = 'blue', label = 'Simple CNN train set')
+plt.plot (hist_model1.history ['val_accuracy'], color = 'orange', label = 'Simple CNN validation set')
+plt.plot (hist_model2.history ['accuracy'], color = 'red', label = 'Simple CCN with Data Augmentation train set')
+plt.plot (hist_model2.history ['val_accuracy'], color = 'green', label = 'Simple CNN without Data Augmentation validation set')
+plt.plot (hist_model3.history ['accuracy'], color = 'black', label = 'AlexNet train set')
+plt.plot (hist_model3.history ['val_accuracy'], color = 'gray', label = 'AlexNet CNN validation set')
+
+plt.legend (['Simple CNN train set', 'Simple CNN validation set',
+ 'Simple CCN with Data Augmentation train set', 'Validation set in CNN without Data Augmentation', 'AlexNet train set',
+           'AlexNet CNN validation set'])
+plt.rcParams ["figure.figsize"] = [30.10]
+plt.show (1)
+
+#Firstly, we evaluated the classifier obtained by training the Simple CNN model on the test set.
+_, acc1 = model1.evaluate(x_test, y_test, verbose=0)
+print('%.3f' % (acc1 * 100.0))
+
+#We get the confusion matrix for the simple CNN model
+labTrue = ["HEALTHY: current", "COVID-19: current", "PNEUMONIA: current"]
+labPred = ["HEALTHY: pred", "COVID-19: pred", "PNEUMONIA: pred"]
+y_pred1 = model1.predict_classes (x_test, verbose = 0)
+y_test_real = np.argmax (y_test, axis = 1)
+conf_matrix1 = confusion_matrix (y_test_real, y_pred1)
+df_conf_matrix1 = pd.DataFrame (conf_matrix1, index = labTrue,
+                   columns = labPred)
+df_conf_matrix1
+
+# Second, we evaluate the classifier obtained by training the CNN Simple model on the test set
+#with Data Augmentation.
+_, acc2 = model2.evaluate (x_test, y_test, verbose = 0)
+print ('%. 3f'% (acc2 * 100.0))
+
+#We get the confusion matrix for the simple CNN model with Data Augmentation
+y_pred2 = model2.predict_classes (x_test, verbose = 0)
+conf_matrix2 = confusion_matrix (y_test_real, y_pred2)
+df_conf_matrix2 = pd.DataFrame (conf_matrix2, index = labTrue,
+                   columns = labPred)
+df_conf_matrix2
+
+#Finally, the model is evaluated on the test set, the classifier obtained by training the model
+#AlexNet.
+_, acc3 = model3.evaluate (x_test, y_test, verbose = 0)
+print ('%. 3f'% (acc3 * 100.0))
+
+#We get the confusion matrix for the AlexNet model
+y_pred3 = model3.predict_classes (x_test, verbose = 0)
+conf_matrix3 = confusion_matrix (y_test_real, y_pred3)
+df_conf_matrix3 = pd.DataFrame (conf_matrix3, index = labTrue,
+                   columns = labPred)
+df_conf_matrix3
+
+#EXPLAINABILITY
+
+#Below you can see the effect of the first convolutional layer on a particular image. Is a
+# way of seeing how the AlexNet model is working on an image. This process could be applied for each
+#one of the layers of the model and for each one of the images.
+
+#We see that some filters focus on the bone area and most filters focus on the corresponding mass
+#to the lungs.
+
+#The influence of the convolutional layers on the following image will be analyzed.
+img_CAM = load_img ('COVID-19 / 41591_2020_819_Fig1_HTML.webp-day10.png', target_size = (224, 224))
+plt.imshow (img_CAM, cmap = 'gray')
+
+# The first convolutional layer of the created AlexNet model is loaded into the model variable.
+model = Model (inputs = model3.inputs, outputs = model3.layers [1] .output)
+model.summary ()
+# The image is loaded with the corresponding size
+img_CAM = load_img ('COVID-19 / 41591_2020_819_Fig1_HTML.webp-day10.png', target_size = (224, 224))
+# Convert image to array
+img_CAM = img_to_array (img_CAM)
+# Dimension expands
+img_CAM = expand_dims (img_CAM, axis = 0)
+# Pixels of the image are preprocessed according to the first convolutional layer
+img_CAM = preprocess_input (img_CAM)
+# The characteristics map is obtained after the first convolutional layer
+feature_maps = model.predict (img_CAM)
+# 64 samples are displayed in an 8x8 matrix
+square = 8
+ix = 1
+for _ in range (square):
+for _ in range (square):
+ax = plt.subplot (square, square, ix)
+ax.set_xticks ([])
+ax.set_yticks ([])
+plt.imshow (feature_maps [0,:,:, ix-1], cmap = 'gray', aspect = 'auto')
+ix + = 1
+plt.rcParams ["figure.figsize"] = [10.5]
+plt.show ()
