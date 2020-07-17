@@ -11,5 +11,7 @@ In total, we have a quantity of 426 images, divided into training set (339 image
 The objective is to develop a system based on AlexNet capable of correctly classifying images in these 3 categories. In addition, we´ll compare AlexNet model with a simple baseline model.
 
 [1] Ieee8023/covid-chestxray-dataset
+
 [2] Cohen, J.P., Morrison, P. and Dao, L., 2020. COVID-19 image data collection.
+
 [3] Paul Mooney, 2019 Chest X-ray Images (pneumonia)
