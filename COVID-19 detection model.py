@@ -146,3 +146,27 @@ y_val = to_categorical (y_val, 3)
 #We show the first image of the validation set:
 plt.imshow (x_val [0], cmap = 'gray')
 
+#Model creation and training pipeline
+
+# According to the study indicated in reference [3], where the capacities analysis of 10 CNN is carried out
+# on a set of medical images of patients with COVID-19 and healthy patients, the best neural network
+#results presented is AlexNet. In this section, two CNNs will be designed, a simple CNN network and an AlexNet network
+#in order to evaluate the results of both methods. Additionally, the influence of applying
+# Online Data Augmentation techniques on the train set is analysed.
+
+#Simple CNN creation
+
+#A simple CCN is created, that is, with few layers in both the convolutional stage and the stage
+#FC. In the convolutional stage a convolutional layer is defined with 2 kernels of size 2x2.
+# In the FC stage, a Flattan layer is defined that transforms a two-dimensional matrix (in this case, our
+#imagenes) in a vector that can be processed by the output Dense layer, in this case with 3 nodes, since the
+# classification will be made between 3 categories.
+
+def create_cnn ():
+    model=Sequential()
+    model.add(Conv2D(2, (2, 2), activation='relu', input_shape=(224,224, 3)))
+    model.add(Flatten())
+    model.add(Dropout(0.5))
+    model.add(Dense(3, activation='softmax'))
+    return model
+
